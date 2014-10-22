@@ -21,6 +21,12 @@ if [ ! -f $libv8_libbase ]; then
 	exit
 fi
 
+libv8_snapshot=`find $outdir -name 'libv8_snapshot.a' | head -1`""
+if [ ! -f $libv8_libsnapshot ]; then
+	echo >&2 "V8 build failed?"
+	exit
+fi
+
 # for Linux
 librt=''
 if [ `go env | grep GOHOSTOS` == 'GOHOSTOS="linux"' ]; then
@@ -38,7 +44,7 @@ echo "Name: v8
 Description: v8 javascript engine
 Version: $version
 Cflags: $libstdcpp -I`pwd` -I`pwd`/v8-$version/include
-Libs: $libstdcpp $libv8_libbase $libv8_base $outdir/libv8_snapshot.a $librt" > v8.pc
+Libs: $libstdcpp -Wl,--start-group $libv8_libbase $libv8_base $libv8_snapshot -Wl,--end-group $librt" > v8.pc
 
 # let's go
 go install
