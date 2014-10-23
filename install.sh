@@ -29,8 +29,12 @@ fi
 
 # for Linux
 librt=''
+start_group=''
+end_group=''
 if [ `go env | grep GOHOSTOS` == 'GOHOSTOS="linux"' ]; then
 	librt='-lrt'
+	start_group='-Wl,--start-group'
+	end_group='-Wl,--end-group'
 fi
 
 # for Mac
@@ -44,7 +48,7 @@ echo "Name: v8
 Description: v8 javascript engine
 Version: $version
 Cflags: $libstdcpp -I`pwd` -I`pwd`/v8-$version/include
-Libs: $libstdcpp -Wl,--start-group $libv8_libbase $libv8_base $libv8_snapshot -Wl,--end-group $librt" > v8.pc
+Libs: $libstdcpp $start_group $libv8_libbase $libv8_base $libv8_snapshot $end_group $librt" > v8.pc
 
 # let's go
 go install
